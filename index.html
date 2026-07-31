@@ -480,19 +480,19 @@ const META_2 = 10;
 function limpiarTel(v){ return v.replace(/\D/g,''); }
 
 function mensajeWhatsApp(nombre, stamps){
+  const faltanA30 = Math.max(0, META_1 - stamps);
+  const faltanALatte = Math.max(0, META_2 - stamps);
+
   if(stamps >= META_2){
     return `¡Felicidades ${nombre}! Completaste tu tarjeta Püri Café: tienes un iced latte gratis para tu próxima visita (no aplica affogato latte) ☕`;
   }
-  if(stamps === META_2 - 1){
-    return `¡Ya casi, ${nombre}! Te falta 1 sello para tu iced latte gratis en Püri Café ☕`;
-  }
   if(stamps === META_1){
-    return `¡Felicidades ${nombre}! Ya tienes tu 30% de descuento disponible en Püri Café 🎉`;
+    return `¡Felicidades ${nombre}! Ya tienes tu 30% de descuento disponible en Püri Café. Además, estás a ${faltanALatte} sello(s) de tu iced latte gratis 🎉`;
   }
-  if(stamps === META_1 - 1){
-    return `¡Ya casi, ${nombre}! Te falta 1 sello para tu 30% de descuento en Püri Café 🎉`;
+  if(stamps > META_1){
+    return `Gracias por tu visita, ${nombre}. Llevas ${stamps} de ${TOTAL_SELLOS} sellos en tu tarjeta Püri Café. Estás a ${faltanALatte} sello(s) de tu iced latte gratis ☕`;
   }
-  return `Gracias por tu visita, ${nombre}. Llevas ${stamps} de ${TOTAL_SELLOS} sellos en tu tarjeta Püri Café ☕`;
+  return `Gracias por tu visita, ${nombre}. Llevas ${stamps} de ${TOTAL_SELLOS} sellos en tu tarjeta Püri Café. Estás a ${faltanA30} sello(s) de tu 30% de descuento y a ${faltanALatte} de tu iced latte gratis ☕`;
 }
 
 function linkWhatsApp(tel, mensaje){
