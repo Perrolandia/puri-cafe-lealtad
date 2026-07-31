@@ -380,27 +380,9 @@
   Falta conectar la base de datos (Firebase). Revisa el archivo LEEME.md para completar la configuración.
 </p>
 
-<nav>
-  <button id="tab-staff" class="active">Staff</button>
-  <button id="tab-cliente">Mi tarjeta</button>
-</nav>
-
 <main>
 
-  <section id="view-staff" class="view active">
-    <div class="info-programa">
-      <p>Sello 5 de 10 → 30% de descuento en el total de la cuenta.</p>
-      <p>Sello 10 de 10 → 1 iced latte gratis (no aplica affogato latte).</p>
-    </div>
-    <div class="field">
-      <label>Número de celular del cliente</label>
-      <input type="tel" id="staff-phone" placeholder="998 123 4567">
-    </div>
-    <button class="btn" id="staff-buscar">Buscar cliente</button>
-    <div id="staff-resultado"></div>
-  </section>
-
-  <section id="view-cliente" class="view">
+  <section id="view-cliente" class="view active">
     <div class="info-programa">
       <p>Sello 5 de 10 → 30% de descuento en el total de la cuenta.</p>
       <p>Sello 10 de 10 → 1 iced latte gratis (no aplica affogato latte).</p>
@@ -467,7 +449,6 @@ const configPendiente = Object.values(firebaseConfig).some(v => String(v).starts
 
 if(configPendiente){
   document.getElementById('config-warning').style.display = 'block';
-  document.getElementById('staff-buscar').disabled = true;
   document.getElementById('cliente-buscar').disabled = true;
 }
 
@@ -478,43 +459,6 @@ const META_1 = 5;
 const META_2 = 10;
 
 function limpiarTel(v){ return v.replace(/\D/g,''); }
-
-function mensajeWhatsApp(nombre, stamps){
-  const faltanA30 = Math.max(0, META_1 - stamps);
-  const faltanALatte = Math.max(0, META_2 - stamps);
-
-  if(stamps >= META_2){
-    return `¡Felicidades ${nombre}! Completaste tu tarjeta Püri Café: tienes un iced latte gratis para tu próxima visita (no aplica affogato latte) ☕`;
-  }
-  if(stamps === META_1){
-    return `¡Felicidades ${nombre}! Ya tienes tu 30% de descuento disponible en Püri Café. Además, estás a ${faltanALatte} sello(s) de tu iced latte gratis 🎉`;
-  }
-  if(stamps > META_1){
-    return `Gracias por tu visita, ${nombre}. Llevas ${stamps} de ${TOTAL_SELLOS} sellos en tu tarjeta Püri Café. Estás a ${faltanALatte} sello(s) de tu iced latte gratis ☕`;
-  }
-  return `Gracias por tu visita, ${nombre}. Llevas ${stamps} de ${TOTAL_SELLOS} sellos en tu tarjeta Püri Café. Estás a ${faltanA30} sello(s) de tu 30% de descuento y a ${faltanALatte} de tu iced latte gratis ☕`;
-}
-
-function linkWhatsApp(tel, mensaje){
-  const telConLada = tel.length === 10 ? '52' + tel : tel;
-  return `https://wa.me/${telConLada}?text=${encodeURIComponent(mensaje)}`;
-}
-
-function tabs(){
-  const staffTab = document.getElementById('tab-staff');
-  const clienteTab = document.getElementById('tab-cliente');
-  const staffView = document.getElementById('view-staff');
-  const clienteView = document.getElementById('view-cliente');
-  staffTab.onclick = () => {
-    staffTab.classList.add('active'); clienteTab.classList.remove('active');
-    staffView.classList.add('active'); clienteView.classList.remove('active');
-  };
-  clienteTab.onclick = () => {
-    clienteTab.classList.add('active'); staffTab.classList.remove('active');
-    clienteView.classList.add('active'); staffView.classList.remove('active');
-  };
-}
-tabs();
 
 function renderStamps(stamps){
   let html = '<div class="stamps">';
@@ -551,195 +495,10 @@ function renderRewards(cliente, editable){
   return html;
 }
 
-function renderDatosExtra(cliente){
-  const filas = [
-    ['Correo', cliente.email],
-    ['Instagram', cliente.instagram],
-    ['Colonia', cliente.colonia],
-    ['Nacimiento', cliente.nacimiento],
-    ['Cómo nos conoció', cliente.conocio],
-    ['Ocupación', cliente.ocupacion]
-  ].filter(([_, v]) => v);
-
-  let resumen = '<div class="datos-extra">';
-  if(filas.length === 0){
-    resumen += '<p>Sin más datos guardados todavía.</p>';
-  }else{
-    filas.forEach(([label, v]) => { resumen += `<p><strong>${label}:</strong> ${v}</p>`; });
-  }
-  resumen += '</div>';
-
-  const editar = `
-    <div class="mas-datos" id="editar-datos">
-      <div class="field"><label>Apellido</label><input type="text" id="editar-apellido" value="${cliente.apellido||''}"></div>
-      <div class="field"><label>Correo electrónico</label><input type="email" id="editar-email" value="${cliente.email||''}"></div>
-      <div class="field"><label>Instagram</label><input type="text" id="editar-instagram" value="${cliente.instagram||''}"></div>
-      <div class="field"><label>Colonia / zona</label><input type="text" id="editar-colonia" value="${cliente.colonia||''}"></div>
-      <div class="field"><label>Fecha de nacimiento</label><input type="date" id="editar-nacimiento" value="${cliente.nacimiento||''}"></div>
-      <div class="field"><label>¿Cómo nos conociste?</label>
-        <select id="editar-conocio">
-          <option value="">Selecciona (opcional)</option>
-          <option ${cliente.conocio==='Instagram'?'selected':''}>Instagram</option>
-          <option ${cliente.conocio==='Recomendación de un amigo'?'selected':''}>Recomendación de un amigo</option>
-          <option ${cliente.conocio==='Pasando por la calle'?'selected':''}>Pasando por la calle</option>
-          <option ${cliente.conocio==='Google Maps'?'selected':''}>Google Maps</option>
-          <option ${cliente.conocio==='Otro'?'selected':''}>Otro</option>
-        </select>
-      </div>
-      <div class="field"><label>Ocupación</label><input type="text" id="editar-ocupacion" value="${cliente.ocupacion||''}"></div>
-      <button class="btn" id="guardar-datos">Guardar datos</button>
-    </div>`;
-
-  return `
-    <button type="button" class="btn-link" id="toggle-editar-datos">Ver / editar más datos</button>
-    ${resumen}
-    ${editar}`;
-}
-
 async function getCliente(tel){
   const ref = db.collection('clientes').doc(tel);
   const snap = await ref.get();
   return { ref, snap };
-}
-
-document.getElementById('staff-buscar').onclick = async () => {
-  const tel = limpiarTel(document.getElementById('staff-phone').value);
-  const cont = document.getElementById('staff-resultado');
-  if(!tel){ cont.innerHTML = '<p class="msg error">Ingresa un número válido.</p>'; return; }
-  cont.innerHTML = '<p class="msg">Buscando…</p>';
-
-  try{
-    const { ref, snap } = await getCliente(tel);
-
-    if(!snap.exists){
-      cont.innerHTML = `
-        <div class="card">
-          <p class="card-name">Cliente nuevo</p>
-          <p class="card-phone">${tel}</p>
-          <div class="field">
-            <label>Nombre</label>
-            <input type="text" id="nuevo-nombre" placeholder="Nombre">
-          </div>
-          <div class="field">
-            <label>Apellido</label>
-            <input type="text" id="nuevo-apellido" placeholder="Opcional">
-          </div>
-          <button type="button" class="btn-link" id="toggle-mas-datos">+ Agregar más datos (opcional)</button>
-          <div class="mas-datos" id="mas-datos">
-            <div class="field">
-              <label>Correo electrónico</label>
-              <input type="email" id="nuevo-email" placeholder="Opcional">
-            </div>
-            <div class="field">
-              <label>Instagram</label>
-              <input type="text" id="nuevo-instagram" placeholder="@usuario (opcional)">
-            </div>
-            <div class="field">
-              <label>Colonia / zona</label>
-              <input type="text" id="nuevo-colonia" placeholder="Opcional">
-            </div>
-            <div class="field">
-              <label>Fecha de nacimiento</label>
-              <input type="date" id="nuevo-nacimiento">
-            </div>
-            <div class="field">
-              <label>¿Cómo nos conociste?</label>
-              <select id="nuevo-conocio">
-                <option value="">Selecciona (opcional)</option>
-                <option>Instagram</option>
-                <option>Recomendación de un amigo</option>
-                <option>Pasando por la calle</option>
-                <option>Google Maps</option>
-                <option>Otro</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Ocupación</label>
-              <input type="text" id="nuevo-ocupacion" placeholder="Opcional">
-            </div>
-          </div>
-          <button class="btn" id="crear-cliente">Crear tarjeta</button>
-        </div>`;
-      document.getElementById('toggle-mas-datos').onclick = () => {
-        document.getElementById('mas-datos').classList.toggle('abierto');
-      };
-      document.getElementById('crear-cliente').onclick = async () => {
-        const nombre = document.getElementById('nuevo-nombre').value.trim() || 'Cliente';
-        const apellido = document.getElementById('nuevo-apellido').value.trim();
-        const email = document.getElementById('nuevo-email').value.trim();
-        const instagram = document.getElementById('nuevo-instagram').value.trim();
-        const colonia = document.getElementById('nuevo-colonia').value.trim();
-        const nacimiento = document.getElementById('nuevo-nacimiento').value;
-        const conocio = document.getElementById('nuevo-conocio').value;
-        const ocupacion = document.getElementById('nuevo-ocupacion').value.trim();
-        await ref.set({
-          name: nombre, apellido, phone: tel, email, instagram, colonia,
-          nacimiento, conocio, ocupacion,
-          stamps: 0, reward5Used: false, createdAt: Date.now()
-        });
-        cargarTarjetaStaff(tel);
-      };
-      return;
-    }
-    cargarTarjetaStaff(tel);
-  }catch(e){
-    cont.innerHTML = '<p class="msg error">No se pudo conectar. Revisa la configuración de Firebase en LEEME.md.</p>';
-  }
-};
-
-async function cargarTarjetaStaff(tel){
-  const cont = document.getElementById('staff-resultado');
-  const { ref, snap } = await getCliente(tel);
-  const cliente = snap.data();
-
-  cont.innerHTML = `
-    <div class="card">
-      <img class="carita-bg" src="assets/carita-azul.png" alt="">
-      <p class="card-name">${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}</p>
-      <p class="card-phone">${cliente.phone}</p>
-      ${renderStamps(cliente.stamps)}
-      <button class="btn" id="btn-sellar" ${cliente.stamps >= TOTAL_SELLOS ? 'disabled' : ''}>+ 1 sello</button>
-      <a class="btn-whatsapp" target="_blank" rel="noopener" href="${linkWhatsApp(cliente.phone, mensajeWhatsApp(cliente.name, cliente.stamps))}">Enviar WhatsApp al cliente</a>
-      ${renderRewards(cliente, true)}
-      ${renderDatosExtra(cliente)}
-    </div>`;
-
-  const btnSellar = document.getElementById('btn-sellar');
-  if(btnSellar){
-    btnSellar.onclick = async () => {
-      await ref.update({ stamps: firebase.firestore.FieldValue.increment(1) });
-      cargarTarjetaStaff(tel);
-    };
-  }
-  const btn5 = document.getElementById('btn-usar-5');
-  if(btn5){
-    btn5.onclick = async () => {
-      await ref.update({ reward5Used: true });
-      cargarTarjetaStaff(tel);
-    };
-  }
-  const btn10 = document.getElementById('btn-usar-10');
-  if(btn10){
-    btn10.onclick = async () => {
-      await ref.update({ stamps: 0, reward5Used: false });
-      cargarTarjetaStaff(tel);
-    };
-  }
-  document.getElementById('toggle-editar-datos').onclick = () => {
-    document.getElementById('editar-datos').classList.toggle('abierto');
-  };
-  document.getElementById('guardar-datos').onclick = async () => {
-    await ref.update({
-      apellido: document.getElementById('editar-apellido').value.trim(),
-      email: document.getElementById('editar-email').value.trim(),
-      instagram: document.getElementById('editar-instagram').value.trim(),
-      colonia: document.getElementById('editar-colonia').value.trim(),
-      nacimiento: document.getElementById('editar-nacimiento').value,
-      conocio: document.getElementById('editar-conocio').value,
-      ocupacion: document.getElementById('editar-ocupacion').value.trim()
-    });
-    cargarTarjetaStaff(tel);
-  };
 }
 
 document.getElementById('cliente-buscar').onclick = async () => {
