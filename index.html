@@ -43,6 +43,42 @@
     display:block;
     margin:0 auto;
   }
+  .sticker-strip{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 1.25rem;
+    background:var(--puri-white);
+    overflow:hidden;
+  }
+  .sticker-strip .sticker{
+    width:22px;
+    height:22px;
+    flex-shrink:0;
+    opacity:0.9;
+  }
+  .sticker-strip svg{
+    width:22px;
+    height:22px;
+    flex-shrink:0;
+  }
+  .marco{
+    display:flex;
+    align-items:stretch;
+  }
+  .marco-lateral{
+    width:18px;
+    flex-shrink:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='72'%3E%3Crect x='6' y='6' width='3' height='3' fill='%23004AAD'/%3E%3Crect x='11' y='6' width='3' height='3' fill='%23004AAD'/%3E%3Cpath d='M5 11v7a4.5 4.5 0 0 0 9 0v-7' fill='none' stroke='%23004AAD' stroke-width='2'/%3E%3Cpath d='M6 40c0 1-0.6 1-0.6 1.5s0.6 0.5 0.6 1.5M11 40c0 1-0.6 1-0.6 1.5s0.6 0.5 0.6 1.5' stroke='%23004AAD' stroke-width='1' fill='none' stroke-linecap='round'/%3E%3Cpath d='M3 44h11v6a3.5 3.5 0 0 1-3.5 3.5h-4A3.5 3.5 0 0 1 3 50z' fill='%23BA6C3D'/%3E%3C/svg%3E");
+    background-repeat:repeat-y;
+    background-position:center top;
+    background-size:18px 72px;
+  }
+  .marco-interior{
+    flex:1;
+    min-width:0;
+    background:var(--bg-warm);
+  }
   .config-warning{
     background:#FCEBEB;
     color:#791F1F;
@@ -102,6 +138,43 @@
     outline:none;
     border-color:var(--puri-blue);
   }
+  .field select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-family:'Poppins',sans-serif;
+    font-size:0.95rem;
+    background:#fff;
+  }
+  .field select:focus{
+    outline:none;
+    border-color:var(--puri-blue);
+  }
+  .btn-link{
+    width:100%;
+    padding:10px;
+    border:none;
+    background:none;
+    color:var(--puri-blue);
+    font-family:'Poppins',sans-serif;
+    font-weight:500;
+    font-size:0.85rem;
+    cursor:pointer;
+    text-align:center;
+    margin-bottom:6px;
+  }
+  .mas-datos{display:none;}
+  .mas-datos.abierto{display:block;}
+  .datos-extra{
+    font-size:0.8rem;
+    color:#666;
+    margin-top:1rem;
+    padding-top:1rem;
+    border-top:1px solid #eee;
+  }
+  .datos-extra p{margin:0 0 6px;}
+  .datos-extra strong{color:var(--puri-black);}
   .btn{
     width:100%;
     padding:13px;
@@ -173,6 +246,21 @@
     font-weight:600;
     white-space:nowrap;
   }
+  .btn-whatsapp{
+    display:block;
+    width:100%;
+    text-align:center;
+    padding:13px;
+    border-radius:10px;
+    background:#25D366;
+    color:#fff;
+    font-family:'Poppins',sans-serif;
+    font-weight:500;
+    font-size:0.9rem;
+    text-decoration:none;
+    margin-top:10px;
+    box-sizing:border-box;
+  }
   .rewards{margin-top:1.75rem;}
   .reward{
     display:flex;
@@ -196,6 +284,18 @@
     margin-top:2px;
   }
   .reward.locked .reward-note{color:#bbb;}
+  .info-programa{
+    background:var(--puri-yellow);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:1.25rem;
+    font-size:0.8rem;
+  }
+  .info-programa p{
+    margin:0 0 6px;
+    font-weight:500;
+  }
+  .info-programa p:last-child{margin-bottom:0;}
   .reward button{
     padding:8px 12px;
     border:none;
@@ -255,10 +355,26 @@
 </head>
 <body>
 
+<div class="marco">
+  <div class="marco-lateral" aria-hidden="true"></div>
+  <div class="marco-interior">
+
 <header>
   <img class="carita" src="assets/carita-azul.png" alt="">
-  <img class="logo" src="assets/logo-puri.png" alt="Püri Café">
+  <img class="logo" src="assets/logo-puri-transparente.png" alt="Püri Café">
 </header>
+
+<div class="sticker-strip" aria-hidden="true">
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+</div>
 
 <p class="config-warning" id="config-warning">
   Falta conectar la base de datos (Firebase). Revisa el archivo LEEME.md para completar la configuración.
@@ -272,6 +388,10 @@
 <main>
 
   <section id="view-staff" class="view active">
+    <div class="info-programa">
+      <p>Sello 5 de 10 → 30% de descuento en el total de la cuenta.</p>
+      <p>Sello 10 de 10 → 1 iced latte gratis (no aplica affogato latte).</p>
+    </div>
     <div class="field">
       <label>Número de celular del cliente</label>
       <input type="tel" id="staff-phone" placeholder="998 123 4567">
@@ -281,6 +401,10 @@
   </section>
 
   <section id="view-cliente" class="view">
+    <div class="info-programa">
+      <p>Sello 5 de 10 → 30% de descuento en el total de la cuenta.</p>
+      <p>Sello 10 de 10 → 1 iced latte gratis (no aplica affogato latte).</p>
+    </div>
     <div class="field">
       <label>Ingresa tu número de celular</label>
       <input type="tel" id="cliente-phone" placeholder="998 123 4567">
@@ -299,13 +423,28 @@
 </div>
 
 <footer>
+  <div class="sticker-strip" aria-hidden="true">
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+  </div>
   <div class="social">
     <a href="https://instagram.com/puri.cafe" target="_blank" rel="noopener">Instagram @puri.cafe</a>
-    <a href="tel:+529841825512">984 182 5512</a>
+    <a href="https://wa.me/529841825512" target="_blank" rel="noopener">984 182 5512</a>
     <a href="https://share.google/QbGlse7mx625PXnV8" target="_blank" rel="noopener">Ubicación</a>
   </div>
   <p class="brand">Tarjeta de lealtad digital · Püri Café</p>
 </footer>
+
+  </div>
+  <div class="marco-lateral" aria-hidden="true"></div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
@@ -339,6 +478,27 @@ const META_1 = 5;
 const META_2 = 10;
 
 function limpiarTel(v){ return v.replace(/\D/g,''); }
+
+function mensajeWhatsApp(nombre, stamps){
+  if(stamps >= META_2){
+    return `¡Felicidades ${nombre}! Completaste tu tarjeta Püri Café: tienes un iced latte gratis para tu próxima visita (no aplica affogato latte) ☕`;
+  }
+  if(stamps === META_2 - 1){
+    return `¡Ya casi, ${nombre}! Te falta 1 sello para tu iced latte gratis en Püri Café ☕`;
+  }
+  if(stamps === META_1){
+    return `¡Felicidades ${nombre}! Ya tienes tu 30% de descuento disponible en Püri Café 🎉`;
+  }
+  if(stamps === META_1 - 1){
+    return `¡Ya casi, ${nombre}! Te falta 1 sello para tu 30% de descuento en Püri Café 🎉`;
+  }
+  return `Gracias por tu visita, ${nombre}. Llevas ${stamps} de ${TOTAL_SELLOS} sellos en tu tarjeta Püri Café ☕`;
+}
+
+function linkWhatsApp(tel, mensaje){
+  const telConLada = tel.length === 10 ? '52' + tel : tel;
+  return `https://wa.me/${telConLada}?text=${encodeURIComponent(mensaje)}`;
+}
 
 function tabs(){
   const staffTab = document.getElementById('tab-staff');
@@ -391,6 +551,51 @@ function renderRewards(cliente, editable){
   return html;
 }
 
+function renderDatosExtra(cliente){
+  const filas = [
+    ['Correo', cliente.email],
+    ['Instagram', cliente.instagram],
+    ['Colonia', cliente.colonia],
+    ['Nacimiento', cliente.nacimiento],
+    ['Cómo nos conoció', cliente.conocio],
+    ['Ocupación', cliente.ocupacion]
+  ].filter(([_, v]) => v);
+
+  let resumen = '<div class="datos-extra">';
+  if(filas.length === 0){
+    resumen += '<p>Sin más datos guardados todavía.</p>';
+  }else{
+    filas.forEach(([label, v]) => { resumen += `<p><strong>${label}:</strong> ${v}</p>`; });
+  }
+  resumen += '</div>';
+
+  const editar = `
+    <div class="mas-datos" id="editar-datos">
+      <div class="field"><label>Apellido</label><input type="text" id="editar-apellido" value="${cliente.apellido||''}"></div>
+      <div class="field"><label>Correo electrónico</label><input type="email" id="editar-email" value="${cliente.email||''}"></div>
+      <div class="field"><label>Instagram</label><input type="text" id="editar-instagram" value="${cliente.instagram||''}"></div>
+      <div class="field"><label>Colonia / zona</label><input type="text" id="editar-colonia" value="${cliente.colonia||''}"></div>
+      <div class="field"><label>Fecha de nacimiento</label><input type="date" id="editar-nacimiento" value="${cliente.nacimiento||''}"></div>
+      <div class="field"><label>¿Cómo nos conociste?</label>
+        <select id="editar-conocio">
+          <option value="">Selecciona (opcional)</option>
+          <option ${cliente.conocio==='Instagram'?'selected':''}>Instagram</option>
+          <option ${cliente.conocio==='Recomendación de un amigo'?'selected':''}>Recomendación de un amigo</option>
+          <option ${cliente.conocio==='Pasando por la calle'?'selected':''}>Pasando por la calle</option>
+          <option ${cliente.conocio==='Google Maps'?'selected':''}>Google Maps</option>
+          <option ${cliente.conocio==='Otro'?'selected':''}>Otro</option>
+        </select>
+      </div>
+      <div class="field"><label>Ocupación</label><input type="text" id="editar-ocupacion" value="${cliente.ocupacion||''}"></div>
+      <button class="btn" id="guardar-datos">Guardar datos</button>
+    </div>`;
+
+  return `
+    <button type="button" class="btn-link" id="toggle-editar-datos">Ver / editar más datos</button>
+    ${resumen}
+    ${editar}`;
+}
+
 async function getCliente(tel){
   const ref = db.collection('clientes').doc(tel);
   const snap = await ref.get();
@@ -412,14 +617,66 @@ document.getElementById('staff-buscar').onclick = async () => {
           <p class="card-name">Cliente nuevo</p>
           <p class="card-phone">${tel}</p>
           <div class="field">
-            <label>Nombre del cliente</label>
+            <label>Nombre</label>
             <input type="text" id="nuevo-nombre" placeholder="Nombre">
+          </div>
+          <div class="field">
+            <label>Apellido</label>
+            <input type="text" id="nuevo-apellido" placeholder="Opcional">
+          </div>
+          <button type="button" class="btn-link" id="toggle-mas-datos">+ Agregar más datos (opcional)</button>
+          <div class="mas-datos" id="mas-datos">
+            <div class="field">
+              <label>Correo electrónico</label>
+              <input type="email" id="nuevo-email" placeholder="Opcional">
+            </div>
+            <div class="field">
+              <label>Instagram</label>
+              <input type="text" id="nuevo-instagram" placeholder="@usuario (opcional)">
+            </div>
+            <div class="field">
+              <label>Colonia / zona</label>
+              <input type="text" id="nuevo-colonia" placeholder="Opcional">
+            </div>
+            <div class="field">
+              <label>Fecha de nacimiento</label>
+              <input type="date" id="nuevo-nacimiento">
+            </div>
+            <div class="field">
+              <label>¿Cómo nos conociste?</label>
+              <select id="nuevo-conocio">
+                <option value="">Selecciona (opcional)</option>
+                <option>Instagram</option>
+                <option>Recomendación de un amigo</option>
+                <option>Pasando por la calle</option>
+                <option>Google Maps</option>
+                <option>Otro</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Ocupación</label>
+              <input type="text" id="nuevo-ocupacion" placeholder="Opcional">
+            </div>
           </div>
           <button class="btn" id="crear-cliente">Crear tarjeta</button>
         </div>`;
+      document.getElementById('toggle-mas-datos').onclick = () => {
+        document.getElementById('mas-datos').classList.toggle('abierto');
+      };
       document.getElementById('crear-cliente').onclick = async () => {
         const nombre = document.getElementById('nuevo-nombre').value.trim() || 'Cliente';
-        await ref.set({ name: nombre, phone: tel, stamps: 0, reward5Used: false, createdAt: Date.now() });
+        const apellido = document.getElementById('nuevo-apellido').value.trim();
+        const email = document.getElementById('nuevo-email').value.trim();
+        const instagram = document.getElementById('nuevo-instagram').value.trim();
+        const colonia = document.getElementById('nuevo-colonia').value.trim();
+        const nacimiento = document.getElementById('nuevo-nacimiento').value;
+        const conocio = document.getElementById('nuevo-conocio').value;
+        const ocupacion = document.getElementById('nuevo-ocupacion').value.trim();
+        await ref.set({
+          name: nombre, apellido, phone: tel, email, instagram, colonia,
+          nacimiento, conocio, ocupacion,
+          stamps: 0, reward5Used: false, createdAt: Date.now()
+        });
         cargarTarjetaStaff(tel);
       };
       return;
@@ -438,11 +695,13 @@ async function cargarTarjetaStaff(tel){
   cont.innerHTML = `
     <div class="card">
       <img class="carita-bg" src="assets/carita-azul.png" alt="">
-      <p class="card-name">${cliente.name}</p>
+      <p class="card-name">${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}</p>
       <p class="card-phone">${cliente.phone}</p>
       ${renderStamps(cliente.stamps)}
       <button class="btn" id="btn-sellar" ${cliente.stamps >= TOTAL_SELLOS ? 'disabled' : ''}>+ 1 sello</button>
+      <a class="btn-whatsapp" target="_blank" rel="noopener" href="${linkWhatsApp(cliente.phone, mensajeWhatsApp(cliente.name, cliente.stamps))}">Enviar WhatsApp al cliente</a>
       ${renderRewards(cliente, true)}
+      ${renderDatosExtra(cliente)}
     </div>`;
 
   const btnSellar = document.getElementById('btn-sellar');
@@ -466,6 +725,21 @@ async function cargarTarjetaStaff(tel){
       cargarTarjetaStaff(tel);
     };
   }
+  document.getElementById('toggle-editar-datos').onclick = () => {
+    document.getElementById('editar-datos').classList.toggle('abierto');
+  };
+  document.getElementById('guardar-datos').onclick = async () => {
+    await ref.update({
+      apellido: document.getElementById('editar-apellido').value.trim(),
+      email: document.getElementById('editar-email').value.trim(),
+      instagram: document.getElementById('editar-instagram').value.trim(),
+      colonia: document.getElementById('editar-colonia').value.trim(),
+      nacimiento: document.getElementById('editar-nacimiento').value,
+      conocio: document.getElementById('editar-conocio').value,
+      ocupacion: document.getElementById('editar-ocupacion').value.trim()
+    });
+    cargarTarjetaStaff(tel);
+  };
 }
 
 document.getElementById('cliente-buscar').onclick = async () => {
@@ -484,7 +758,7 @@ document.getElementById('cliente-buscar').onclick = async () => {
     cont.innerHTML = `
       <div class="card">
         <img class="carita-bg" src="assets/carita-azul.png" alt="">
-        <p class="card-name">${cliente.name}</p>
+        <p class="card-name">${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}</p>
         <p class="card-phone">${cliente.phone}</p>
         ${renderStamps(cliente.stamps)}
         ${renderRewards(cliente, false)}
