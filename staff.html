@@ -766,6 +766,7 @@ function renderDatosExtra(cliente){
 
   const editar = `
     <div class="mas-datos" id="editar-datos">
+      <div class="field"><label>Teléfono</label><input type="tel" id="editar-telefono" value="${cliente.phone||''}"></div>
       <div class="field"><label>Apellido</label><input type="text" id="editar-apellido" value="${cliente.apellido||''}"></div>
       <div class="field"><label>Correo electrónico</label><input type="email" id="editar-email" value="${cliente.email||''}"></div>
       <div class="field"><label>Instagram</label><input type="text" id="editar-instagram" value="${cliente.instagram||''}"></div>
@@ -897,6 +898,7 @@ async function cargarTarjetaStaff(tel){
       <a class="btn-whatsapp" target="_blank" rel="noopener" href="${linkWhatsApp(cliente.phone, mensajeWhatsApp(cliente.name, cliente.stamps))}">Enviar WhatsApp al cliente</a>
       ${renderRewards(cliente, true)}
       ${renderDatosExtra(cliente)}
+      <button class="btn" id="btn-eliminar" style="background:#c0392b;margin-top:14px;">Eliminar cliente</button>
     </div>`;
 
   const btnSellar = document.getElementById('btn-sellar');
@@ -924,7 +926,8 @@ async function cargarTarjetaStaff(tel){
     document.getElementById('editar-datos').classList.toggle('abierto');
   };
   document.getElementById('guardar-datos').onclick = async () => {
-    await ref.update({
+    const nuevoTel = limpiarTel(document.getElementById('editar-telefono').value);
+    const camposExtra = {
       apellido: document.getElementById('editar-apellido').value.trim(),
       email: document.getElementById('editar-email').value.trim(),
       instagram: document.getElementById('editar-instagram').value.trim(),
@@ -932,8 +935,29 @@ async function cargarTarjetaStaff(tel){
       nacimiento: document.getElementById('editar-nacimiento').value,
       conocio: document.getElementById('editar-conocio').value,
       ocupacion: document.getElementById('editar-ocupacion').value.trim()
-    });
-    cargarTarjetaStaff(tel);
+    };
+    if(nuevoTel && nuevoTel !== tel){
+      const nuevoRef = db.collection('clientes').doc(nuevoTel);
+      const yaExiste = await nuevoRef.get();
+      if(yaExiste.exists){
+        alert('Ya existe un cliente registrado con ese número.');
+        return;
+      }
+      await nuevoRef.set({ ...cliente, ...camposExtra, phone: nuevoTel });
+      await ref.delete();
+      document.getElementById('staff-phone').value = nuevoTel;
+      cargarTarjetaStaff(nuevoTel);
+    }else{
+      await ref.update(camposExtra);
+      cargarTarjetaStaff(tel);
+    }
+  };
+  document.getElementById('btn-eliminar').onclick = async () => {
+    if(confirm(`¿Seguro que quieres eliminar a ${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}? Esta acción no se puede deshacer.`)){
+      await ref.delete();
+      cont.innerHTML = '<p class="msg">Cliente eliminado.</p>';
+      document.getElementById('staff-phone').value = '';
+    }
   };
 }
 
