@@ -478,16 +478,7 @@
   Falta conectar la base de datos (Firebase). Revisa el archivo LEEME.md para completar la configuración.
 </p>
 
-<div class="pin-pantalla" id="pin-pantalla">
-  <div class="field">
-    <label>PIN del staff</label>
-    <input type="password" inputmode="numeric" maxlength="4" id="pin-input" placeholder="••••">
-  </div>
-  <button class="btn" id="pin-entrar">Entrar</button>
-  <p class="pin-error" id="pin-error">PIN incorrecto, intenta de nuevo.</p>
-</div>
-
-<div id="app-staff">
+<div id="app-staff" style="display:block;">
 <main>
 
   <div class="sub-nav">
@@ -583,31 +574,6 @@ const META_2 = 10;
 
 function limpiarTel(v){ return v.replace(/\D/g,''); }
 
-// ============================================================
-// PIN del staff — cámbialo aquí por el que quieras usar en el mostrador
-// ============================================================
-const PIN_STAFF = "2026";
-// ============================================================
-
-if(sessionStorage.getItem('puri_staff_ok') === 'si'){
-  document.getElementById('pin-pantalla').style.display = 'none';
-  document.getElementById('app-staff').style.display = 'block';
-}
-
-document.getElementById('pin-entrar').onclick = () => {
-  const valor = document.getElementById('pin-input').value.trim();
-  if(valor === PIN_STAFF){
-    sessionStorage.setItem('puri_staff_ok', 'si');
-    document.getElementById('pin-pantalla').style.display = 'none';
-    document.getElementById('app-staff').style.display = 'block';
-  }else{
-    document.getElementById('pin-error').style.display = 'block';
-  }
-};
-document.getElementById('pin-input').addEventListener('keydown', (e) => {
-  if(e.key === 'Enter'){ document.getElementById('pin-entrar').click(); }
-});
-
 let clientesCache = null;
 
 function subNav(){
@@ -672,8 +638,11 @@ function renderListaClientes(lista){
   document.querySelectorAll('.fila-cliente').forEach(fila => {
     fila.onclick = () => {
       document.getElementById('staff-phone').value = fila.dataset.tel;
-      document.getElementById('sub-tab-buscar').click();
-      document.getElementById('staff-buscar').click();
+      document.getElementById('sub-tab-buscar').classList.add('active');
+      document.getElementById('sub-tab-dashboard').classList.remove('active');
+      document.getElementById('view-staff').classList.add('active');
+      document.getElementById('view-dashboard').classList.remove('active');
+      buscarClienteEnStaff(fila.dataset.tel);
     };
   });
 }
@@ -797,8 +766,8 @@ async function getCliente(tel){
   return { ref, snap };
 }
 
-document.getElementById('staff-buscar').onclick = async () => {
-  const tel = limpiarTel(document.getElementById('staff-phone').value);
+async function buscarClienteEnStaff(telRaw){
+  const tel = limpiarTel(telRaw);
   const cont = document.getElementById('staff-resultado');
   if(!tel){ cont.innerHTML = '<p class="msg error">Ingresa un número válido.</p>'; return; }
   cont.innerHTML = '<p class="msg">Buscando…</p>';
@@ -892,7 +861,8 @@ document.getElementById('staff-buscar').onclick = async () => {
   }catch(e){
     cont.innerHTML = '<p class="msg error">No se pudo conectar. Revisa la configuración de Firebase en LEEME.md.</p>';
   }
-};
+}
+document.getElementById('staff-buscar').onclick = () => buscarClienteEnStaff(document.getElementById('staff-phone').value);
 
 async function cambiarTelefonoSiHaceFalta(refActual, cliente, telActual, nuevoTelRaw, extra){
   const nuevoTel = limpiarTel(nuevoTelRaw);

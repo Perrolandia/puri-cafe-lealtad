@@ -501,6 +501,17 @@ async function getCliente(tel){
   return { ref, snap };
 }
 
+function renderTarjetaCliente(cliente){
+  return `
+    <div class="card">
+      <img class="carita-bg" src="assets/carita-azul.png" alt="">
+      <p class="card-name">${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}</p>
+      <p class="card-phone">${cliente.phone}</p>
+      ${renderStamps(cliente.stamps)}
+      ${renderRewards(cliente, false)}
+    </div>`;
+}
+
 document.getElementById('cliente-buscar').onclick = async () => {
   const tel = limpiarTel(document.getElementById('cliente-phone').value);
   const cont = document.getElementById('cliente-resultado');
@@ -510,18 +521,45 @@ document.getElementById('cliente-buscar').onclick = async () => {
   try{
     const { snap } = await getCliente(tel);
     if(!snap.exists){
-      cont.innerHTML = '<p class="msg">Aún no tienes una tarjeta. Pregunta en el mostrador.</p>';
+      cont.innerHTML = `
+        <div class="card">
+          <p class="card-name">Aún no tienes tarjeta</p>
+          <p class="card-phone" style="margin-bottom:1rem;">Regístrate en un momento 👇</p>
+          <div class="field"><label>Nombre</label><input type="text" id="registro-nombre" placeholder="Nombre"></div>
+          <div class="field"><label>Apellido</label><input type="text" id="registro-apellido" placeholder="Opcional"></div>
+          <div class="field"><label>Fecha de nacimiento</label><input type="date" id="registro-nacimiento"></div>
+          <div class="field"><label>¿Cómo nos conociste?</label>
+            <select id="registro-conocio">
+              <option value="">Selecciona (opcional)</option>
+              <option>Instagram</option>
+              <option>Recomendación de un amigo</option>
+              <option>Pasando por la calle</option>
+              <option>Google Maps</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <button class="btn" id="registro-crear">Crear mi tarjeta</button>
+        </div>`;
+      document.getElementById('registro-crear').onclick = async () => {
+        const nombre = document.getElementById('registro-nombre').value.trim();
+        if(!nombre){ alert('Escribe tu nombre para continuar.'); return; }
+        const nuevoCliente = {
+          name: nombre,
+          apellido: document.getElementById('registro-apellido').value.trim(),
+          phone: tel,
+          email: '', instagram: '', colonia: '',
+          nacimiento: document.getElementById('registro-nacimiento').value,
+          conocio: document.getElementById('registro-conocio').value,
+          ocupacion: '',
+          stamps: 0, reward5Used: false, createdAt: Date.now()
+        };
+        await db.collection('clientes').doc(tel).set(nuevoCliente);
+        cont.innerHTML = renderTarjetaCliente(nuevoCliente);
+      };
       return;
     }
     const cliente = snap.data();
-    cont.innerHTML = `
-      <div class="card">
-        <img class="carita-bg" src="assets/carita-azul.png" alt="">
-        <p class="card-name">${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}</p>
-        <p class="card-phone">${cliente.phone}</p>
-        ${renderStamps(cliente.stamps)}
-        ${renderRewards(cliente, false)}
-      </div>`;
+    cont.innerHTML = renderTarjetaCliente(cliente);
   }catch(e){
     cont.innerHTML = '<p class="msg error">No se pudo conectar. Revisa la configuración de Firebase en LEEME.md.</p>';
   }
