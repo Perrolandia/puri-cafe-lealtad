@@ -478,7 +478,16 @@
   Falta conectar la base de datos (Firebase). Revisa el archivo LEEME.md para completar la configuración.
 </p>
 
-<div id="app-staff" style="display:block;">
+<div class="pin-pantalla" id="pin-pantalla">
+  <div class="field">
+    <label>PIN del staff</label>
+    <input type="password" inputmode="numeric" maxlength="4" id="pin-input" placeholder="••••">
+  </div>
+  <button class="btn" id="pin-entrar">Entrar</button>
+  <p class="pin-error" id="pin-error">PIN incorrecto, intenta de nuevo.</p>
+</div>
+
+<div id="app-staff">
 <main>
 
   <div class="sub-nav">
@@ -573,6 +582,30 @@ const META_1 = 5;
 const META_2 = 10;
 
 function limpiarTel(v){ return v.replace(/\D/g,''); }
+
+// ============================================================
+// PIN del staff — cámbialo aquí por el que quieras usar en el mostrador
+// ============================================================
+const PIN_STAFF = "2026";
+// ============================================================
+
+if(sessionStorage.getItem('puri_staff_ok') === 'si'){
+  document.getElementById('pin-pantalla').style.display = 'none';
+  document.getElementById('app-staff').style.display = 'block';
+}
+document.getElementById('pin-entrar').onclick = () => {
+  const valor = document.getElementById('pin-input').value.trim();
+  if(valor === PIN_STAFF){
+    sessionStorage.setItem('puri_staff_ok', 'si');
+    document.getElementById('pin-pantalla').style.display = 'none';
+    document.getElementById('app-staff').style.display = 'block';
+  }else{
+    document.getElementById('pin-error').style.display = 'block';
+  }
+};
+document.getElementById('pin-input').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ document.getElementById('pin-entrar').click(); }
+});
 
 let clientesCache = null;
 

@@ -460,6 +460,21 @@ const META_2 = 10;
 
 function limpiarTel(v){ return v.replace(/\D/g,''); }
 
+// ============================================================
+// Notificación por WhatsApp al staff cuando se registra un cliente nuevo
+// Configúralo siguiendo las instrucciones del LEEME.md (sección CallMeBot)
+// ============================================================
+const CALLMEBOT_TELEFONO_STAFF = "529841825512";
+const CALLMEBOT_APIKEY = "TU_APIKEY_CALLMEBOT";
+// ============================================================
+
+function notificarStaffNuevoCliente(nombre, telefono){
+  if(CALLMEBOT_APIKEY.startsWith('TU_')) return;
+  const mensaje = `🎉 Nuevo cliente registrado en Püri Café: ${nombre} (${telefono})`;
+  const url = `https://api.callmebot.com/whatsapp.php?phone=${CALLMEBOT_TELEFONO_STAFF}&text=${encodeURIComponent(mensaje)}&apikey=${CALLMEBOT_APIKEY}`;
+  fetch(url).catch(() => {});
+}
+
 function renderStamps(stamps){
   let html = '<div class="stamps">';
   for(let i=1;i<=TOTAL_SELLOS;i++){
@@ -554,6 +569,7 @@ document.getElementById('cliente-buscar').onclick = async () => {
           stamps: 0, reward5Used: false, createdAt: Date.now()
         };
         await db.collection('clientes').doc(tel).set(nuevoCliente);
+        notificarStaffNuevoCliente(nombre, tel);
         cont.innerHTML = renderTarjetaCliente(nuevoCliente);
       };
       return;
