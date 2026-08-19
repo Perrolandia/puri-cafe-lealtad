@@ -930,7 +930,10 @@ async function cargarTarjetaStaff(tel){
         <button class="btn" id="guardar-tel-rapido">Guardar teléfono</button>
       </div>
       ${renderStamps(cliente.stamps)}
-      <button class="btn" id="btn-sellar" ${cliente.stamps >= TOTAL_SELLOS ? 'disabled' : ''}>+ 1 sello</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" id="btn-sellar" style="flex:1;" ${cliente.stamps >= TOTAL_SELLOS ? 'disabled' : ''}>+ 1 sello</button>
+        <button class="btn" id="btn-quitar-sello" style="flex:1;background:#999;" ${cliente.stamps <= 0 ? 'disabled' : ''}>− 1 sello</button>
+      </div>
       <a class="btn-whatsapp" target="_blank" rel="noopener" href="${linkWhatsApp(cliente.phone, mensajeWhatsApp(cliente.name, cliente.stamps))}">Enviar WhatsApp al cliente</a>
       ${renderRewards(cliente, true)}
       ${renderDatosExtra(cliente)}
@@ -942,6 +945,15 @@ async function cargarTarjetaStaff(tel){
     btnSellar.onclick = async () => {
       await ref.update({ stamps: firebase.firestore.FieldValue.increment(1) });
       cargarTarjetaStaff(tel);
+    };
+  }
+  const btnQuitarSello = document.getElementById('btn-quitar-sello');
+  if(btnQuitarSello){
+    btnQuitarSello.onclick = async () => {
+      if(cliente.stamps > 0){
+        await ref.update({ stamps: firebase.firestore.FieldValue.increment(-1) });
+        cargarTarjetaStaff(tel);
+      }
     };
   }
   const btn5 = document.getElementById('btn-usar-5');
