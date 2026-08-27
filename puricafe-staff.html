@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Püri Café — Tarjeta de lealtad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --puri-blue:#004AAD;
+    --puri-blue-dark:#003580;
+    --puri-yellow:#FFF0B1;
+    --puri-brown:#BA6C3D;
+    --puri-black:#000000;
+    --puri-white:#FFFFFF;
+    --bg-warm:#FFFDF6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    background:var(--bg-warm);
+    color:var(--puri-black);
+    min-height:100vh;
+  }
+  header{
+    background:var(--puri-yellow);
+    padding:2rem 1.5rem 1.75rem;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  header .carita{
+    position:absolute;
+    top:14px;
+    right:18px;
+    width:34px;
+    opacity:0.9;
+  }
+  header img.logo{
+    width:150px;
+    display:block;
+    margin:0 auto;
+  }
+  .sticker-strip{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 1.25rem;
+    background:var(--puri-white);
+    overflow:hidden;
+  }
+  .sticker-strip .sticker{
+    width:22px;
+    height:22px;
+    flex-shrink:0;
+    opacity:0.9;
+  }
+  .sticker-strip svg{
+    width:22px;
+    height:22px;
+    flex-shrink:0;
+  }
+  .marco{
+    display:flex;
+    align-items:stretch;
+  }
+  .marco-lateral{
+    width:18px;
+    flex-shrink:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='72'%3E%3Crect x='6' y='6' width='3' height='3' fill='%23004AAD'/%3E%3Crect x='11' y='6' width='3' height='3' fill='%23004AAD'/%3E%3Cpath d='M5 11v7a4.5 4.5 0 0 0 9 0v-7' fill='none' stroke='%23004AAD' stroke-width='2'/%3E%3Cpath d='M6 40c0 1-0.6 1-0.6 1.5s0.6 0.5 0.6 1.5M11 40c0 1-0.6 1-0.6 1.5s0.6 0.5 0.6 1.5' stroke='%23004AAD' stroke-width='1' fill='none' stroke-linecap='round'/%3E%3Cpath d='M3 44h11v6a3.5 3.5 0 0 1-3.5 3.5h-4A3.5 3.5 0 0 1 3 50z' fill='%23BA6C3D'/%3E%3C/svg%3E");
+    background-repeat:repeat-y;
+    background-position:center top;
+    background-size:18px 72px;
+  }
+  .marco-interior{
+    flex:1;
+    min-width:0;
+    background:var(--bg-warm);
+  }
+  .config-warning{
+    background:#FCEBEB;
+    color:#791F1F;
+    font-size:0.8rem;
+    text-align:center;
+    padding:10px 16px;
+    display:none;
+  }
+  nav{
+    display:flex;
+    justify-content:center;
+    gap:0;
+    background:var(--puri-white);
+    border-bottom:1px solid #eee;
+  }
+  nav button{
+    flex:1;
+    max-width:220px;
+    padding:14px 10px;
+    background:none;
+    border:none;
+    font-family:'Poppins',sans-serif;
+    font-size:0.85rem;
+    font-weight:500;
+    letter-spacing:0.5px;
+    color:#999;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+  }
+  nav button.active{
+    color:var(--puri-blue);
+    border-bottom:3px solid var(--puri-blue);
+  }
+  main{
+    max-width:480px;
+    margin:0 auto;
+    padding:1.5rem 1.25rem 1rem;
+  }
+  .view{display:none;}
+  .view.active{display:block;}
+  .field{margin-bottom:1rem;}
+  .field label{
+    display:block;
+    font-size:0.8rem;
+    color:#666;
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-family:'Poppins',sans-serif;
+    font-size:0.95rem;
+  }
+  .field input:focus{
+    outline:none;
+    border-color:var(--puri-blue);
+  }
+  .field select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-family:'Poppins',sans-serif;
+    font-size:0.95rem;
+    background:#fff;
+  }
+  .field select:focus{
+    outline:none;
+    border-color:var(--puri-blue);
+  }
+  .btn-link{
+    width:100%;
+    padding:10px;
+    border:none;
+    background:none;
+    color:var(--puri-blue);
+    font-family:'Poppins',sans-serif;
+    font-weight:500;
+    font-size:0.85rem;
+    cursor:pointer;
+    text-align:center;
+    margin-bottom:6px;
+  }
+  .mas-datos{display:none;}
+  .mas-datos.abierto{display:block;}
+  .datos-extra{
+    font-size:0.8rem;
+    color:#666;
+    margin-top:1rem;
+    padding-top:1rem;
+    border-top:1px solid #eee;
+  }
+  .datos-extra p{margin:0 0 6px;}
+  .datos-extra strong{color:var(--puri-black);}
+  .pin-pantalla{
+    max-width:320px;
+    margin:3rem auto;
+    padding:0 1.25rem;
+    text-align:center;
+  }
+  .pin-pantalla input{
+    width:100%;
+    padding:16px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-family:'Poppins',sans-serif;
+    font-size:1.4rem;
+    text-align:center;
+    letter-spacing:6px;
+    margin-bottom:12px;
+  }
+  .pin-error{
+    color:#c0392b;
+    font-size:0.8rem;
+    margin-top:8px;
+    display:none;
+  }
+  #app-staff{display:none;}
+  .sub-nav{
+    display:flex;
+    gap:0;
+    background:#f2f2ee;
+    border-radius:10px;
+    padding:4px;
+    margin-bottom:1.25rem;
+  }
+  .sub-nav button{
+    flex:1;
+    padding:10px;
+    border:none;
+    background:none;
+    border-radius:8px;
+    font-family:'Poppins',sans-serif;
+    font-size:0.82rem;
+    font-weight:500;
+    color:#888;
+    cursor:pointer;
+  }
+  .sub-nav button.active{
+    background:var(--puri-white);
+    color:var(--puri-blue);
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);
+  }
+  .sub-view{display:none;}
+  .sub-view.active{display:block;}
+  .stats-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:1.25rem;
+  }
+  .stat-card{
+    background:var(--puri-white);
+    border-radius:10px;
+    padding:10px 8px;
+    text-align:center;
+  }
+  .stat-card .num{
+    font-family:'Fraunces',serif;
+    font-size:1.4rem;
+    color:var(--puri-blue);
+    display:block;
+  }
+  .stat-card .lbl{
+    font-size:0.65rem;
+    color:#888;
+  }
+  .fila-cliente{
+    background:var(--puri-white);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:8px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .fila-cliente:active{background:#f7f5ee;}
+  .fila-cliente .nombre{
+    font-weight:500;
+    font-size:0.9rem;
+  }
+  .fila-cliente .detalle{
+    font-size:0.75rem;
+    color:#999;
+  }
+  .fila-cliente .sellos-mini{
+    font-size:0.8rem;
+    font-weight:500;
+    color:var(--puri-brown);
+    white-space:nowrap;
+  }
+  .btn{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:10px;
+    background:var(--puri-blue);
+    color:var(--puri-white);
+    font-family:'Poppins',sans-serif;
+    font-weight:500;
+    font-size:0.95rem;
+    cursor:pointer;
+    margin-top:4px;
+  }
+  .btn:active{background:var(--puri-blue-dark);}
+  .btn:disabled{opacity:0.4;cursor:default;}
+  .card{
+    background:var(--puri-white);
+    border-radius:16px;
+    padding:1.5rem;
+    margin-top:1.25rem;
+    box-shadow:0 2px 14px rgba(0,0,0,0.06);
+    position:relative;
+    overflow:hidden;
+  }
+  .card .carita-bg{
+    position:absolute;
+    bottom:-10px;
+    right:-10px;
+    width:70px;
+    opacity:0.12;
+  }
+  .card-name{
+    font-family:'Fraunces',serif;
+    font-size:1.3rem;
+    margin:0 0 4px;
+  }
+  .card-phone{
+    font-size:0.8rem;
+    color:#999;
+    margin:0 0 1.25rem;
+  }
+  .stamps{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin-bottom:1.25rem;
+  }
+  .stamp{
+    aspect-ratio:1;
+    border-radius:50%;
+    border:2px dashed #ddd;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.1rem;
+    position:relative;
+  }
+  .stamp.filled{
+    border:2px solid var(--puri-brown);
+    background:var(--puri-brown);
+    color:var(--puri-white);
+  }
+  .stamp.milestone::after{
+    content:attr(data-mark);
+    position:absolute;
+    bottom:-18px;
+    font-size:0.6rem;
+    color:var(--puri-blue);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .btn-whatsapp{
+    display:block;
+    width:100%;
+    text-align:center;
+    padding:13px;
+    border-radius:10px;
+    background:#25D366;
+    color:#fff;
+    font-family:'Poppins',sans-serif;
+    font-weight:500;
+    font-size:0.9rem;
+    text-decoration:none;
+    margin-top:10px;
+    box-sizing:border-box;
+  }
+  .rewards{margin-top:1.75rem;}
+  .reward{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 14px;
+    border-radius:10px;
+    background:var(--puri-yellow);
+    margin-bottom:10px;
+    font-size:0.85rem;
+  }
+  .reward.locked{
+    background:#f2f2f2;
+    color:#aaa;
+  }
+  .reward-label{font-weight:500;}
+  .reward-note{
+    font-size:0.7rem;
+    color:#8a6d2f;
+    display:block;
+    margin-top:2px;
+  }
+  .reward.locked .reward-note{color:#bbb;}
+  .info-programa{
+    background:var(--puri-yellow);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:1.25rem;
+    font-size:0.8rem;
+  }
+  .info-programa p{
+    margin:0 0 6px;
+    font-weight:500;
+  }
+  .info-programa p:last-child{margin-bottom:0;}
+  .reward button{
+    padding:8px 12px;
+    border:none;
+    border-radius:8px;
+    background:var(--puri-blue);
+    color:#fff;
+    font-size:0.75rem;
+    font-weight:500;
+    cursor:pointer;
+  }
+  .msg{
+    text-align:center;
+    font-size:0.85rem;
+    color:#999;
+    padding:2rem 0;
+  }
+  .msg.error{color:#c0392b;}
+  .galeria{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:1.5rem 1.25rem 0.5rem;
+    max-width:480px;
+    margin:0 auto;
+  }
+  .galeria img{
+    width:110px;
+    height:110px;
+    object-fit:cover;
+    border-radius:12px;
+    flex-shrink:0;
+  }
+  footer{
+    text-align:center;
+    padding:1.5rem 1.25rem 2rem;
+    max-width:480px;
+    margin:0 auto;
+  }
+  footer .social{
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  footer .social a{
+    color:var(--puri-blue);
+    text-decoration:none;
+    font-size:0.8rem;
+    font-weight:500;
+  }
+  footer .brand{
+    font-size:0.7rem;
+    color:#bbb;
+  }
+</style>
+</head>
+<body>
+
+<div class="marco">
+  <div class="marco-lateral" aria-hidden="true"></div>
+  <div class="marco-interior">
+
+<header>
+  <img class="carita" src="assets/carita-azul.png" alt="">
+  <img class="logo" src="assets/logo-puri-transparente.png" alt="Püri Café">
+</header>
+
+<div class="sticker-strip" aria-hidden="true">
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+  <img class="sticker" src="assets/carita-azul.png" alt="">
+</div>
+
+<p class="config-warning" id="config-warning">
+  Falta conectar la base de datos (Firebase). Revisa el archivo LEEME.md para completar la configuración.
+</p>
+
+<div class="pin-pantalla" id="pin-pantalla">
+  <div class="field">
+    <label>PIN del staff</label>
+    <input type="password" inputmode="numeric" maxlength="4" id="pin-input" placeholder="••••">
+  </div>
+  <button class="btn" id="pin-entrar">Entrar</button>
+  <p class="pin-error" id="pin-error">PIN incorrecto, intenta de nuevo.</p>
+</div>
+
+<div id="app-staff">
+<main>
+
+  <div class="sub-nav">
+    <button id="sub-tab-buscar" class="active">Buscar cliente</button>
+    <button id="sub-tab-dashboard">Todos los clientes</button>
+  </div>
+
+  <section id="view-staff" class="sub-view active">
+    <div class="info-programa">
+      <p>Sello 5 de 10 → 30% de descuento en el total de la cuenta.</p>
+      <p>Sello 10 de 10 → 1 iced latte gratis (no aplica affogato latte).</p>
+    </div>
+    <div class="field">
+      <label>Número de celular del cliente</label>
+      <input type="tel" id="staff-phone" placeholder="998 123 4567">
+    </div>
+    <button class="btn" id="staff-buscar">Buscar cliente</button>
+    <div id="staff-resultado"></div>
+  </section>
+
+  <section id="view-dashboard" class="sub-view">
+    <div class="stats-grid" id="dashboard-stats"></div>
+    <div class="field">
+      <label>Filtrar por nombre, teléfono o colonia</label>
+      <input type="text" id="dashboard-filtro" placeholder="Buscar...">
+    </div>
+    <div id="dashboard-lista"><p class="msg">Cargando clientes…</p></div>
+  </section>
+
+</main>
+</div>
+
+<div class="galeria">
+  <img src="assets/foto-1.png" alt="Iced latte Püri Café">
+  <img src="assets/foto-2.png" alt="Café Püri Café">
+  <img src="assets/foto-3.png" alt="Preparación Püri Café">
+  <img src="assets/foto-4.png" alt="Servido Püri Café">
+</div>
+
+<footer>
+  <div class="sticker-strip" aria-hidden="true">
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4c0 1-1 1-1 2s1 1 1 2M12 4c0 1-1 1-1 2s1 1 1 2" stroke="#004AAD" stroke-width="1.3" stroke-linecap="round"/><path d="M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z" fill="#BA6C3D"/><path d="M16 10h1a3 3 0 0 1 0 6h-1" stroke="#004AAD" stroke-width="1.3"/></svg>
+    <img class="sticker" src="assets/carita-azul.png" alt="">
+  </div>
+  <div class="social">
+    <a href="https://instagram.com/puri.cafe" target="_blank" rel="noopener">Instagram @puri.cafe</a>
+    <a href="https://wa.me/529841825512" target="_blank" rel="noopener">984 182 5512</a>
+    <a href="https://share.google/QbGlse7mx625PXnV8" target="_blank" rel="noopener">Ubicación</a>
+  </div>
+  <p class="brand">Tarjeta de lealtad digital · Püri Café</p>
+</footer>
+
+  </div>
+  <div class="marco-lateral" aria-hidden="true"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script>
+
+// ============================================================
+// 1) PEGA AQUI TU CONFIGURACION DE FIREBASE (Proyecto > Configuracion > SDK)
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyBD_EvK-4AZnveUBc1N43cLDnOy1BGs3Z8",
+  authDomain: "puricafe-46e97.firebaseapp.com",
+  projectId: "puricafe-46e97",
+  storageBucket: "puricafe-46e97.firebasestorage.app",
+  messagingSenderId: "617636517509",
+  appId: "1:617636517509:web:c66bcf67d2021030043bec"
+};
+// ============================================================
+
+const configPendiente = Object.values(firebaseConfig).some(v => String(v).startsWith('TU_'));
+
+if(configPendiente){
+  document.getElementById('config-warning').style.display = 'block';
+  document.getElementById('staff-buscar').disabled = true;
+}
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const TOTAL_SELLOS = 10;
+const META_1 = 5;
+const META_2 = 10;
+
+function limpiarTel(v){ return v.replace(/\D/g,''); }
+
+// ============================================================
+// PIN del staff — cámbialo aquí por el que quieras usar en el mostrador
+// ============================================================
+const PIN_STAFF = "2026";
+// ============================================================
+
+if(sessionStorage.getItem('puri_staff_ok') === 'si'){
+  document.getElementById('pin-pantalla').style.display = 'none';
+  document.getElementById('app-staff').style.display = 'block';
+}
+document.getElementById('pin-entrar').onclick = () => {
+  const valor = document.getElementById('pin-input').value.trim();
+  if(valor === PIN_STAFF){
+    sessionStorage.setItem('puri_staff_ok', 'si');
+    document.getElementById('pin-pantalla').style.display = 'none';
+    document.getElementById('app-staff').style.display = 'block';
+  }else{
+    document.getElementById('pin-error').style.display = 'block';
+  }
+};
+document.getElementById('pin-input').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ document.getElementById('pin-entrar').click(); }
+});
+
+let clientesCache = null;
+
+function subNav(){
+  const tabBuscar = document.getElementById('sub-tab-buscar');
+  const tabDash = document.getElementById('sub-tab-dashboard');
+  const viewBuscar = document.getElementById('view-staff');
+  const viewDash = document.getElementById('view-dashboard');
+  tabBuscar.onclick = () => {
+    tabBuscar.classList.add('active'); tabDash.classList.remove('active');
+    viewBuscar.classList.add('active'); viewDash.classList.remove('active');
+  };
+  tabDash.onclick = () => {
+    tabDash.classList.add('active'); tabBuscar.classList.remove('active');
+    viewDash.classList.add('active'); viewBuscar.classList.remove('active');
+    if(!clientesCache){ cargarDashboard(); }
+  };
+}
+subNav();
+
+async function cargarDashboard(){
+  const cont = document.getElementById('dashboard-lista');
+  const stats = document.getElementById('dashboard-stats');
+  cont.innerHTML = '<p class="msg">Cargando clientes…</p>';
+  try{
+    const snap = await db.collection('clientes').get();
+    clientesCache = [];
+    snap.forEach(doc => clientesCache.push({ id: doc.id, ...doc.data() }));
+    clientesCache.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+    const total = clientesCache.length;
+    const completadas = clientesCache.filter(c => c.stamps >= TOTAL_SELLOS).length;
+    const promedio = total ? (clientesCache.reduce((s,c) => s + (c.stamps||0), 0) / total).toFixed(1) : 0;
+
+    stats.innerHTML = `
+      <div class="stat-card"><span class="num">${total}</span><span class="lbl">Clientes</span></div>
+      <div class="stat-card"><span class="num">${promedio}</span><span class="lbl">Sellos prom.</span></div>
+      <div class="stat-card"><span class="num">${completadas}</span><span class="lbl">Tarjetas completas</span></div>
+    `;
+
+    renderListaClientes(clientesCache);
+  }catch(e){
+    cont.innerHTML = '<p class="msg error">No se pudo cargar la lista de clientes.</p>';
+  }
+}
+
+function renderListaClientes(lista){
+  const cont = document.getElementById('dashboard-lista');
+  if(lista.length === 0){
+    cont.innerHTML = '<p class="msg">Aún no hay clientes registrados.</p>';
+    return;
+  }
+  cont.innerHTML = lista.map(c => `
+    <div class="fila-cliente" data-tel="${c.phone}">
+      <div>
+        <div class="nombre">${c.name}${c.apellido ? ' ' + c.apellido : ''}</div>
+        <div class="detalle">${c.phone}${c.colonia ? ' · ' + c.colonia : ''}</div>
+      </div>
+      <div class="sellos-mini">${c.stamps||0}/${TOTAL_SELLOS}</div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.fila-cliente').forEach(fila => {
+    fila.onclick = () => {
+      document.getElementById('staff-phone').value = fila.dataset.tel;
+      document.getElementById('sub-tab-buscar').classList.add('active');
+      document.getElementById('sub-tab-dashboard').classList.remove('active');
+      document.getElementById('view-staff').classList.add('active');
+      document.getElementById('view-dashboard').classList.remove('active');
+      buscarClienteEnStaff(fila.dataset.tel);
+    };
+  });
+}
+
+document.getElementById('dashboard-filtro').addEventListener('input', (e) => {
+  if(!clientesCache) return;
+  const q = e.target.value.trim().toLowerCase();
+  const filtrada = clientesCache.filter(c =>
+    (c.name||'').toLowerCase().includes(q) ||
+    (c.apellido||'').toLowerCase().includes(q) ||
+    (c.phone||'').includes(q) ||
+    (c.colonia||'').toLowerCase().includes(q)
+  );
+  renderListaClientes(filtrada);
+});
+
+function mensajeWhatsApp(nombre, stamps){
+  const faltanA30 = Math.max(0, META_1 - stamps);
+  const faltanALatte = Math.max(0, META_2 - stamps);
+
+  if(stamps >= META_2){
+    return `¡Felicidades ${nombre}! Completaste tu tarjeta Püri Café: tienes un iced latte gratis para tu próxima visita (no aplica affogato latte) ☕`;
+  }
+  if(stamps === META_1){
+    return `¡Felicidades ${nombre}! Ya tienes tu 30% de descuento disponible en Püri Café. Además, estás a ${faltanALatte} sello(s) de tu iced latte gratis 🎉`;
+  }
+  if(stamps > META_1){
+    return `Gracias por tu visita, ${nombre}. Llevas ${stamps} de ${TOTAL_SELLOS} sellos en tu tarjeta Püri Café. Estás a ${faltanALatte} sello(s) de tu iced latte gratis ☕`;
+  }
+  return `Gracias por tu visita, ${nombre}. Llevas ${stamps} de ${TOTAL_SELLOS} sellos en tu tarjeta Püri Café. Estás a ${faltanA30} sello(s) de tu 30% de descuento y a ${faltanALatte} de tu iced latte gratis ☕`;
+}
+
+function linkWhatsApp(tel, mensaje){
+  const telConLada = tel.length === 10 ? '52' + tel : tel;
+  return `https://wa.me/${telConLada}?text=${encodeURIComponent(mensaje)}`;
+}
+
+function renderStamps(stamps){
+  let html = '<div class="stamps">';
+  for(let i=1;i<=TOTAL_SELLOS;i++){
+    const filled = i <= stamps;
+    const milestone = i === META_1 ? 'data-mark="30% off"' : (i === META_2 ? 'data-mark="Latte gratis"' : '');
+    const mClass = (i === META_1 || i === META_2) ? 'milestone' : '';
+    html += `<div class="stamp ${filled?'filled':''} ${mClass}" ${milestone}>${filled?'&#9679;':''}</div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderRewards(cliente, editable){
+  const has5 = cliente.stamps >= META_1;
+  const used5 = cliente.reward5Used;
+  const has10 = cliente.stamps >= META_2;
+  let html = '<div class="rewards">';
+  html += `<div class="reward ${has5 && !used5 ? '' : 'locked'}">
+    <div>
+      <span class="reward-label">30% de descuento</span>
+      <span class="reward-note">Se desbloquea en la 5ta visita</span>
+    </div>
+    ${editable && has5 && !used5 ? '<button id="btn-usar-5">Usar</button>' : (used5 ? '<span style="font-size:0.7rem;color:#999;">Usado</span>' : '')}
+  </div>`;
+  html += `<div class="reward ${has10 ? '' : 'locked'}">
+    <div>
+      <span class="reward-label">Iced latte gratis</span>
+      <span class="reward-note">10ma visita · no aplica affogato latte</span>
+    </div>
+    ${editable && has10 ? '<button id="btn-usar-10">Usar y reiniciar</button>' : ''}
+  </div>`;
+  html += '</div>';
+  return html;
+}
+
+function renderDatosExtra(cliente){
+  const filas = [
+    ['Apellido', cliente.apellido],
+    ['Instagram/Facebook', cliente.instagram],
+    ['Cómo nos conoció', cliente.conocio]
+  ].filter(([_, v]) => v);
+
+  let resumen = '<div class="datos-extra">';
+  if(filas.length === 0){
+    resumen += '<p>Sin más datos guardados todavía.</p>';
+  }else{
+    filas.forEach(([label, v]) => { resumen += `<p><strong>${label}:</strong> ${v}</p>`; });
+  }
+  resumen += '</div>';
+
+  const editar = `
+    <div class="mas-datos" id="editar-datos">
+      <div class="field"><label>Nombre</label><input type="text" id="editar-nombre" value="${cliente.name||''}"></div>
+      <div class="field"><label>Apellido</label><input type="text" id="editar-apellido" value="${cliente.apellido||''}"></div>
+      <div class="field"><label>¿Cómo nos conociste?</label>
+        <select id="editar-conocio">
+          <option value="">Selecciona</option>
+          <option ${cliente.conocio==='Instagram'?'selected':''}>Instagram</option>
+          <option ${cliente.conocio==='Recomendación de un amigo'?'selected':''}>Recomendación de un amigo</option>
+          <option ${cliente.conocio==='Pasando por la calle'?'selected':''}>Pasando por la calle</option>
+          <option ${cliente.conocio==='Google Maps'?'selected':''}>Google Maps</option>
+          <option ${cliente.conocio==='Otro'?'selected':''}>Otro</option>
+        </select>
+      </div>
+      <div class="field"><label>Instagram o Facebook</label><input type="text" id="editar-instagram" value="${cliente.instagram||''}"></div>
+      <button class="btn" id="guardar-datos">Guardar datos</button>
+    </div>`;
+
+  return `
+    <button type="button" class="btn-link" id="toggle-editar-datos">Ver / editar más datos</button>
+    ${resumen}
+    ${editar}`;
+}
+
+async function getCliente(tel){
+  const ref = db.collection('clientes').doc(tel);
+  const snap = await ref.get();
+  return { ref, snap };
+}
+
+async function buscarClienteEnStaff(telRaw){
+  const tel = limpiarTel(telRaw);
+  const cont = document.getElementById('staff-resultado');
+  if(!tel){ cont.innerHTML = '<p class="msg error">Ingresa un número válido.</p>'; return; }
+  cont.innerHTML = '<p class="msg">Buscando…</p>';
+
+  try{
+    const { ref, snap } = await getCliente(tel);
+
+    if(!snap.exists){
+      cont.innerHTML = `
+        <div class="card">
+          <p class="card-name">Cliente nuevo</p>
+          <div class="field">
+            <label>Teléfono</label>
+            <input type="tel" id="nuevo-telefono" value="${tel}">
+          </div>
+          <div class="field">
+            <label>Nombre</label>
+            <input type="text" id="nuevo-nombre" placeholder="Nombre">
+          </div>
+          <div class="field">
+            <label>Apellido</label>
+            <input type="text" id="nuevo-apellido" placeholder="Apellido">
+          </div>
+          <div class="field">
+            <label>¿Cómo nos conociste?</label>
+            <select id="nuevo-conocio">
+              <option value="">Selecciona</option>
+              <option>Instagram</option>
+              <option>Recomendación de un amigo</option>
+              <option>Pasando por la calle</option>
+              <option>Google Maps</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Instagram o Facebook</label>
+            <input type="text" id="nuevo-instagram" placeholder="@usuario">
+          </div>
+          <button class="btn" id="crear-cliente">Crear tarjeta</button>
+        </div>`;
+      document.getElementById('crear-cliente').onclick = async () => {
+        const telFinal = limpiarTel(document.getElementById('nuevo-telefono').value) || tel;
+        const nombre = document.getElementById('nuevo-nombre').value.trim() || 'Cliente';
+        const apellido = document.getElementById('nuevo-apellido').value.trim();
+        const instagram = document.getElementById('nuevo-instagram').value.trim();
+        const conocio = document.getElementById('nuevo-conocio').value;
+        if(telFinal !== tel){
+          const yaExiste = await db.collection('clientes').doc(telFinal).get();
+          if(yaExiste.exists){
+            alert('Ya existe un cliente registrado con ese número.');
+            return;
+          }
+        }
+        await db.collection('clientes').doc(telFinal).set({
+          name: nombre, apellido, phone: telFinal, email: '', instagram, colonia: '',
+          nacimiento: '', conocio, ocupacion: '',
+          stamps: 0, reward5Used: false, createdAt: Date.now()
+        });
+        document.getElementById('staff-phone').value = telFinal;
+        cargarTarjetaStaff(telFinal);
+      };
+      return;
+    }
+    cargarTarjetaStaff(tel);
+  }catch(e){
+    cont.innerHTML = '<p class="msg error">No se pudo conectar. Revisa la configuración de Firebase en LEEME.md.</p>';
+  }
+}
+document.getElementById('staff-buscar').onclick = () => buscarClienteEnStaff(document.getElementById('staff-phone').value);
+
+async function cambiarTelefonoSiHaceFalta(refActual, cliente, telActual, nuevoTelRaw, extra){
+  const nuevoTel = limpiarTel(nuevoTelRaw);
+  if(nuevoTel && nuevoTel !== telActual){
+    const nuevoRef = db.collection('clientes').doc(nuevoTel);
+    const yaExiste = await nuevoRef.get();
+    if(yaExiste.exists){
+      alert('Ya existe un cliente registrado con ese número.');
+      return telActual;
+    }
+    await nuevoRef.set({ ...cliente, ...extra, phone: nuevoTel });
+    await refActual.delete();
+    return nuevoTel;
+  }else{
+    await refActual.update(extra);
+    return telActual;
+  }
+}
+
+async function cargarTarjetaStaff(tel){
+  const cont = document.getElementById('staff-resultado');
+  const { ref, snap } = await getCliente(tel);
+  const cliente = snap.data();
+
+  cont.innerHTML = `
+    <div class="card">
+      <img class="carita-bg" src="assets/carita-azul.png" alt="">
+      <p class="card-name">${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}</p>
+      <p class="card-phone">${cliente.phone} <button type="button" class="btn-link" id="toggle-editar-tel-rapido" style="width:auto;display:inline;padding:0;margin:0;font-size:0.75rem;">(editar)</button></p>
+      <div class="mas-datos" id="editar-tel-rapido">
+        <div class="field"><input type="tel" id="editar-tel-rapido-input" value="${cliente.phone}"></div>
+        <button class="btn" id="guardar-tel-rapido">Guardar teléfono</button>
+      </div>
+      ${renderStamps(cliente.stamps)}
+      <div style="display:flex;gap:8px;">
+        <button class="btn" id="btn-sellar" style="flex:1;" ${cliente.stamps >= TOTAL_SELLOS ? 'disabled' : ''}>+ 1 sello</button>
+        <button class="btn" id="btn-quitar-sello" style="flex:1;background:#999;" ${cliente.stamps <= 0 ? 'disabled' : ''}>− 1 sello</button>
+      </div>
+      <a class="btn-whatsapp" target="_blank" rel="noopener" href="${linkWhatsApp(cliente.phone, mensajeWhatsApp(cliente.name, cliente.stamps))}">Enviar WhatsApp al cliente</a>
+      ${renderRewards(cliente, true)}
+      ${renderDatosExtra(cliente)}
+      <button class="btn" id="btn-eliminar" style="background:#c0392b;margin-top:14px;">Eliminar cliente</button>
+    </div>`;
+
+  const btnSellar = document.getElementById('btn-sellar');
+  if(btnSellar){
+    btnSellar.onclick = async () => {
+      await ref.update({ stamps: firebase.firestore.FieldValue.increment(1) });
+      cargarTarjetaStaff(tel);
+    };
+  }
+  const btnQuitarSello = document.getElementById('btn-quitar-sello');
+  if(btnQuitarSello){
+    btnQuitarSello.onclick = async () => {
+      if(cliente.stamps > 0){
+        await ref.update({ stamps: firebase.firestore.FieldValue.increment(-1) });
+        cargarTarjetaStaff(tel);
+      }
+    };
+  }
+  const btn5 = document.getElementById('btn-usar-5');
+  if(btn5){
+    btn5.onclick = async () => {
+      await ref.update({ reward5Used: true });
+      cargarTarjetaStaff(tel);
+    };
+  }
+  const btn10 = document.getElementById('btn-usar-10');
+  if(btn10){
+    btn10.onclick = async () => {
+      await ref.update({ stamps: 0, reward5Used: false });
+      cargarTarjetaStaff(tel);
+    };
+  }
+  document.getElementById('toggle-editar-tel-rapido').onclick = () => {
+    document.getElementById('editar-tel-rapido').classList.toggle('abierto');
+  };
+  document.getElementById('guardar-tel-rapido').onclick = async () => {
+    const nuevo = await cambiarTelefonoSiHaceFalta(ref, cliente, tel, document.getElementById('editar-tel-rapido-input').value, {});
+    document.getElementById('staff-phone').value = nuevo;
+    cargarTarjetaStaff(nuevo);
+  };
+  document.getElementById('toggle-editar-datos').onclick = () => {
+    document.getElementById('editar-datos').classList.toggle('abierto');
+  };
+  document.getElementById('guardar-datos').onclick = async () => {
+    const camposExtra = {
+      name: document.getElementById('editar-nombre').value.trim() || cliente.name,
+      apellido: document.getElementById('editar-apellido').value.trim(),
+      instagram: document.getElementById('editar-instagram').value.trim(),
+      conocio: document.getElementById('editar-conocio').value
+    };
+    await ref.update(camposExtra);
+    cargarTarjetaStaff(tel);
+  };
+  document.getElementById('btn-eliminar').onclick = async () => {
+    if(confirm(`¿Seguro que quieres eliminar a ${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}? Esta acción no se puede deshacer.`)){
+      await ref.delete();
+      cont.innerHTML = '<p class="msg">Cliente eliminado.</p>';
+      document.getElementById('staff-phone').value = '';
+    }
+  };
+}
+
+
+</script>
+</body>
+</html>
