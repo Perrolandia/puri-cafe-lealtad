@@ -62,3 +62,16 @@ Igual que hicimos con riadcoba:
 - **Staff**: pestaña "Staff" → busca al cliente por celular → si es nuevo, le crea la tarjeta → botón "+1 sello" en cada visita.
 - **Recompensas**: al llegar a 5 sellos se desbloquea "30% de descuento" (botón "Usar" lo marca como canjeado sin reiniciar los sellos). Al llegar a 10 sellos se desbloquea "Iced latte gratis" (excepto affogato latte) — el botón "Usar y reiniciar" reinicia la tarjeta a 0 para el siguiente ciclo.
 - **Cliente**: pestaña "Mi tarjeta" → el cliente pone su celular y ve su progreso (solo lectura, no puede sellarse a sí mismo).
+
+## Notificación de WhatsApp al staff (cliente nuevo)
+
+Cuando un cliente se registra solo desde el link público, le llega un WhatsApp automático al número del staff avisando. Esto usa un servicio gratuito llamado **CallMeBot** — necesita una configuración de un solo paso:
+
+1. Desde el celular del staff (984 182 5512), agrega este número de contacto: **+34 621 44 76 91**
+2. Mándale por WhatsApp exactamente este mensaje: `I allow callmebot to send me messages`
+3. En unos segundos te responde con un mensaje que incluye tu **API Key** (un número).
+4. Copia ese número.
+5. Abre `index.html`, busca la línea `const CALLMEBOT_APIKEY = "TU_APIKEY_CALLMEBOT";` y reemplázala por tu key, por ejemplo: `const CALLMEBOT_APIKEY = "1234567";`
+6. Guarda y vuelve a subir el archivo a GitHub.
+
+Listo — cada vez que alguien se registre solo desde el QR, le llega un WhatsApp automático al 984 182 5512 avisando su nombre y teléfono.

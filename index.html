@@ -541,11 +541,10 @@ document.getElementById('cliente-buscar').onclick = async () => {
           <p class="card-name">Aún no tienes tarjeta</p>
           <p class="card-phone" style="margin-bottom:1rem;">Regístrate en un momento 👇</p>
           <div class="field"><label>Nombre</label><input type="text" id="registro-nombre" placeholder="Nombre"></div>
-          <div class="field"><label>Apellido</label><input type="text" id="registro-apellido" placeholder="Opcional"></div>
-          <div class="field"><label>Fecha de nacimiento</label><input type="date" id="registro-nacimiento"></div>
+          <div class="field"><label>Apellido</label><input type="text" id="registro-apellido" placeholder="Apellido"></div>
           <div class="field"><label>¿Cómo nos conociste?</label>
             <select id="registro-conocio">
-              <option value="">Selecciona (opcional)</option>
+              <option value="">Selecciona</option>
               <option>Instagram</option>
               <option>Recomendación de un amigo</option>
               <option>Pasando por la calle</option>
@@ -553,6 +552,7 @@ document.getElementById('cliente-buscar').onclick = async () => {
               <option>Otro</option>
             </select>
           </div>
+          <div class="field"><label>Instagram o Facebook</label><input type="text" id="registro-redsocial" placeholder="@usuario"></div>
           <button class="btn" id="registro-crear">Crear mi tarjeta</button>
         </div>`;
       document.getElementById('registro-crear').onclick = async () => {
@@ -562,8 +562,8 @@ document.getElementById('cliente-buscar').onclick = async () => {
           name: nombre,
           apellido: document.getElementById('registro-apellido').value.trim(),
           phone: tel,
-          email: '', instagram: '', colonia: '',
-          nacimiento: document.getElementById('registro-nacimiento').value,
+          email: '', instagram: document.getElementById('registro-redsocial').value.trim(), colonia: '',
+          nacimiento: '',
           conocio: document.getElementById('registro-conocio').value,
           ocupacion: '',
           stamps: 0, reward5Used: false, createdAt: Date.now()

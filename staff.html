@@ -750,12 +750,9 @@ function renderRewards(cliente, editable){
 
 function renderDatosExtra(cliente){
   const filas = [
-    ['Correo', cliente.email],
-    ['Instagram', cliente.instagram],
-    ['Colonia', cliente.colonia],
-    ['Nacimiento', cliente.nacimiento],
-    ['Cómo nos conoció', cliente.conocio],
-    ['Ocupación', cliente.ocupacion]
+    ['Apellido', cliente.apellido],
+    ['Instagram/Facebook', cliente.instagram],
+    ['Cómo nos conoció', cliente.conocio]
   ].filter(([_, v]) => v);
 
   let resumen = '<div class="datos-extra">';
@@ -768,14 +765,11 @@ function renderDatosExtra(cliente){
 
   const editar = `
     <div class="mas-datos" id="editar-datos">
+      <div class="field"><label>Nombre</label><input type="text" id="editar-nombre" value="${cliente.name||''}"></div>
       <div class="field"><label>Apellido</label><input type="text" id="editar-apellido" value="${cliente.apellido||''}"></div>
-      <div class="field"><label>Correo electrónico</label><input type="email" id="editar-email" value="${cliente.email||''}"></div>
-      <div class="field"><label>Instagram</label><input type="text" id="editar-instagram" value="${cliente.instagram||''}"></div>
-      <div class="field"><label>Colonia / zona</label><input type="text" id="editar-colonia" value="${cliente.colonia||''}"></div>
-      <div class="field"><label>Fecha de nacimiento</label><input type="date" id="editar-nacimiento" value="${cliente.nacimiento||''}"></div>
       <div class="field"><label>¿Cómo nos conociste?</label>
         <select id="editar-conocio">
-          <option value="">Selecciona (opcional)</option>
+          <option value="">Selecciona</option>
           <option ${cliente.conocio==='Instagram'?'selected':''}>Instagram</option>
           <option ${cliente.conocio==='Recomendación de un amigo'?'selected':''}>Recomendación de un amigo</option>
           <option ${cliente.conocio==='Pasando por la calle'?'selected':''}>Pasando por la calle</option>
@@ -783,7 +777,7 @@ function renderDatosExtra(cliente){
           <option ${cliente.conocio==='Otro'?'selected':''}>Otro</option>
         </select>
       </div>
-      <div class="field"><label>Ocupación</label><input type="text" id="editar-ocupacion" value="${cliente.ocupacion||''}"></div>
+      <div class="field"><label>Instagram o Facebook</label><input type="text" id="editar-instagram" value="${cliente.instagram||''}"></div>
       <button class="btn" id="guardar-datos">Guardar datos</button>
     </div>`;
 
@@ -822,57 +816,31 @@ async function buscarClienteEnStaff(telRaw){
           </div>
           <div class="field">
             <label>Apellido</label>
-            <input type="text" id="nuevo-apellido" placeholder="Opcional">
+            <input type="text" id="nuevo-apellido" placeholder="Apellido">
           </div>
-          <button type="button" class="btn-link" id="toggle-mas-datos">+ Agregar más datos (opcional)</button>
-          <div class="mas-datos" id="mas-datos">
-            <div class="field">
-              <label>Correo electrónico</label>
-              <input type="email" id="nuevo-email" placeholder="Opcional">
-            </div>
-            <div class="field">
-              <label>Instagram</label>
-              <input type="text" id="nuevo-instagram" placeholder="@usuario (opcional)">
-            </div>
-            <div class="field">
-              <label>Colonia / zona</label>
-              <input type="text" id="nuevo-colonia" placeholder="Opcional">
-            </div>
-            <div class="field">
-              <label>Fecha de nacimiento</label>
-              <input type="date" id="nuevo-nacimiento">
-            </div>
-            <div class="field">
-              <label>¿Cómo nos conociste?</label>
-              <select id="nuevo-conocio">
-                <option value="">Selecciona (opcional)</option>
-                <option>Instagram</option>
-                <option>Recomendación de un amigo</option>
-                <option>Pasando por la calle</option>
-                <option>Google Maps</option>
-                <option>Otro</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Ocupación</label>
-              <input type="text" id="nuevo-ocupacion" placeholder="Opcional">
-            </div>
+          <div class="field">
+            <label>¿Cómo nos conociste?</label>
+            <select id="nuevo-conocio">
+              <option value="">Selecciona</option>
+              <option>Instagram</option>
+              <option>Recomendación de un amigo</option>
+              <option>Pasando por la calle</option>
+              <option>Google Maps</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Instagram o Facebook</label>
+            <input type="text" id="nuevo-instagram" placeholder="@usuario">
           </div>
           <button class="btn" id="crear-cliente">Crear tarjeta</button>
         </div>`;
-      document.getElementById('toggle-mas-datos').onclick = () => {
-        document.getElementById('mas-datos').classList.toggle('abierto');
-      };
       document.getElementById('crear-cliente').onclick = async () => {
         const telFinal = limpiarTel(document.getElementById('nuevo-telefono').value) || tel;
         const nombre = document.getElementById('nuevo-nombre').value.trim() || 'Cliente';
         const apellido = document.getElementById('nuevo-apellido').value.trim();
-        const email = document.getElementById('nuevo-email').value.trim();
         const instagram = document.getElementById('nuevo-instagram').value.trim();
-        const colonia = document.getElementById('nuevo-colonia').value.trim();
-        const nacimiento = document.getElementById('nuevo-nacimiento').value;
         const conocio = document.getElementById('nuevo-conocio').value;
-        const ocupacion = document.getElementById('nuevo-ocupacion').value.trim();
         if(telFinal !== tel){
           const yaExiste = await db.collection('clientes').doc(telFinal).get();
           if(yaExiste.exists){
@@ -881,8 +849,8 @@ async function buscarClienteEnStaff(telRaw){
           }
         }
         await db.collection('clientes').doc(telFinal).set({
-          name: nombre, apellido, phone: telFinal, email, instagram, colonia,
-          nacimiento, conocio, ocupacion,
+          name: nombre, apellido, phone: telFinal, email: '', instagram, colonia: '',
+          nacimiento: '', conocio, ocupacion: '',
           stamps: 0, reward5Used: false, createdAt: Date.now()
         });
         document.getElementById('staff-phone').value = telFinal;
@@ -983,13 +951,10 @@ async function cargarTarjetaStaff(tel){
   };
   document.getElementById('guardar-datos').onclick = async () => {
     const camposExtra = {
+      name: document.getElementById('editar-nombre').value.trim() || cliente.name,
       apellido: document.getElementById('editar-apellido').value.trim(),
-      email: document.getElementById('editar-email').value.trim(),
       instagram: document.getElementById('editar-instagram').value.trim(),
-      colonia: document.getElementById('editar-colonia').value.trim(),
-      nacimiento: document.getElementById('editar-nacimiento').value,
-      conocio: document.getElementById('editar-conocio').value,
-      ocupacion: document.getElementById('editar-ocupacion').value.trim()
+      conocio: document.getElementById('editar-conocio').value
     };
     await ref.update(camposExtra);
     cargarTarjetaStaff(tel);
