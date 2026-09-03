@@ -637,13 +637,13 @@ async function cargarDashboard(){
     clientesCache.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
 
     const total = clientesCache.length;
-    const completadas = clientesCache.filter(c => c.stamps >= TOTAL_SELLOS).length;
+    const totalCompletadas = clientesCache.reduce((s,c) => s + (c.tarjetasCompletadas||0), 0);
     const promedio = total ? (clientesCache.reduce((s,c) => s + (c.stamps||0), 0) / total).toFixed(1) : 0;
 
     stats.innerHTML = `
       <div class="stat-card"><span class="num">${total}</span><span class="lbl">Clientes</span></div>
       <div class="stat-card"><span class="num">${promedio}</span><span class="lbl">Sellos prom.</span></div>
-      <div class="stat-card"><span class="num">${completadas}</span><span class="lbl">Tarjetas completas</span></div>
+      <div class="stat-card"><span class="num">${totalCompletadas}</span><span class="lbl">Tarjetas completadas</span></div>
     `;
 
     renderListaClientes(clientesCache);
@@ -851,7 +851,7 @@ async function buscarClienteEnStaff(telRaw){
         await db.collection('clientes').doc(telFinal).set({
           name: nombre, apellido, phone: telFinal, email: '', instagram, colonia: '',
           nacimiento: '', conocio, ocupacion: '',
-          stamps: 0, reward5Used: false, createdAt: Date.now()
+          stamps: 0, reward5Used: false, tarjetasCompletadas: 0, createdAt: Date.now()
         });
         document.getElementById('staff-phone').value = telFinal;
         cargarTarjetaStaff(telFinal);
@@ -893,6 +893,7 @@ async function cargarTarjetaStaff(tel){
       <img class="carita-bg" src="assets/carita-azul.png" alt="">
       <p class="card-name">${cliente.name}${cliente.apellido ? ' ' + cliente.apellido : ''}</p>
       <p class="card-phone">${cliente.phone} <button type="button" class="btn-link" id="toggle-editar-tel-rapido" style="width:auto;display:inline;padding:0;margin:0;font-size:0.75rem;">(editar)</button></p>
+      <p class="card-phone" style="margin-top:-1rem;">Tarjetas completadas: <strong>${cliente.tarjetasCompletadas||0}</strong></p>
       <div class="mas-datos" id="editar-tel-rapido">
         <div class="field"><input type="tel" id="editar-tel-rapido-input" value="${cliente.phone}"></div>
         <button class="btn" id="guardar-tel-rapido">Guardar teléfono</button>
@@ -911,7 +912,17 @@ async function cargarTarjetaStaff(tel){
   const btnSellar = document.getElementById('btn-sellar');
   if(btnSellar){
     btnSellar.onclick = async () => {
-      await ref.update({ stamps: firebase.firestore.FieldValue.increment(1) });
+      const nuevoConteo = (cliente.stamps || 0) + 1;
+      if(nuevoConteo >= TOTAL_SELLOS){
+        await ref.update({
+          stamps: 0,
+          reward5Used: false,
+          tarjetasCompletadas: firebase.firestore.FieldValue.increment(1)
+        });
+        alert(`¡Tarjeta completa! Entrega la recompensa de la 10ma visita.\n${cliente.name} lleva ${(cliente.tarjetasCompletadas||0)+1} tarjeta(s) completada(s) en total.`);
+      }else{
+        await ref.update({ stamps: firebase.firestore.FieldValue.increment(1) });
+      }
       cargarTarjetaStaff(tel);
     };
   }
